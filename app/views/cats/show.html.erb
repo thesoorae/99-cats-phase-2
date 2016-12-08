@@ -11,18 +11,29 @@
       <td><%= @cat.send(attr_name) %></td>
     </tr>
   <% end %>
+  <tr>
+    <td> owner </td>
+    <td> <%= @cat.owner.username %> </td>
+  </tr>
 </table>
 
 <%= link_to "Edit #{@cat.name}", edit_cat_url(@cat) %>
+<%= link_to "Back to Cats", cats_url  %>
+
+<% if current_user.id == @cat.owner.id %>
 
 <h2>Rental Requests</h2>
 <table>
   <tr>
     <th>Start Date</th>
     <th>End Date</th>
+    <th>Renter Name</th>
     <th>Status</th>
   </tr>
-  <% @cat.rental_requests.order("start_date").each do |req| %>
-    <%= render "req_tr", req: req %>
+    <% @cat.rental_requests.each do |req| %>
+      <%= render "req_tr", req: req %>
+    <% end %>
+  <% else%>
+  <%= button_to "Rent this cat!", new_cat_rental_request_url, method: :get %>
   <% end %>
 </table>

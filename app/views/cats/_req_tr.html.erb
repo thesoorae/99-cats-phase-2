@@ -1,6 +1,8 @@
 <tr>
   <td><%= req.start_date %></td>
   <td><%= req.end_date %></td>
+  <td align="center"> <%= req.potential_renter.username %></td>
+
   <td>
     <% if req.pending? %>
         <%= button_to "Approve", approve_cat_rental_request_url(req) %>

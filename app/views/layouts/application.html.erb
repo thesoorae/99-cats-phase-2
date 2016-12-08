@@ -8,14 +8,20 @@
 </head>
 <body>
   <header>
+
+    <%= render "shared/errors" %>
+
     <% if current_user.nil? %>
       <h1> Welcome </h1>
       <%= button_to 'Log In', new_session_url, method: :get %>
+      <%= button_to 'Register New User', new_user_url, method: :get %>
+
     <% else %>
      <h1> Welcome <%= current_user.username %> </h1>
-     <%= button_to 'Log out', new_session_url, method: :delete %>
+     <%= button_to 'Log out', session_url, method: :delete %>
     <% end %>
 
+</header>
 
 <%= yield %>
 

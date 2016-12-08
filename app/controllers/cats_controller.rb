@@ -1,11 +1,19 @@
 class CatsController < ApplicationController
+  before_action :require_login
+  skip_before_action :require_login, only: [:show, :index]
+  before_action :check_owner, only: [:edit, :update]
+
+
   def index
     @cats = Cat.all
     render :index
   end
 
   def show
-    @cat = Cat.find(params[:id])
+    @cat = Cat.includes(rental_requests: :potential_renter)
+    .where(id: params[:id])
+    .order('cat_rental_requests.start_date')
+    .first
     render :show
   end
 
@@ -16,6 +24,9 @@ class CatsController < ApplicationController
 
   def create
     @cat = Cat.new(cat_params)
+    @cat.owner_id = current_user.id
+
+
     if @cat.save
       redirect_to cat_url(@cat)
     else
@@ -40,6 +51,7 @@ class CatsController < ApplicationController
   end
 
   private
+
 
   def cat_params
     params.require(:cat)

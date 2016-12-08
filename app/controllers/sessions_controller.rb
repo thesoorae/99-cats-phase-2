@@ -1,4 +1,15 @@
 class SessionsController < ApplicationController
+  before_action :already_logged
+  skip_before_action :already_logged, only: [:destroy]
+
+
+  def destroy
+    return if current_user.nil?
+    current_user.reset_session_token!
+    session[:session_token] = nil
+
+    redirect_to new_session_url
+  end
 
   def new
     render :new
@@ -11,7 +22,7 @@ class SessionsController < ApplicationController
 
     if user
       user.reset_session_token!
-      session[:session_token] = user.session_token
+      login_user(user)
       redirect_to cats_url
     else
       ## flash right here?
@@ -19,10 +30,6 @@ class SessionsController < ApplicationController
     end
   end
 
-  def destroy
-    @current_user.reset_session_token! unless @current_user.nil?
-    session[:session_token] = nil
-  end
 
   private
 
